@@ -4,6 +4,7 @@ const morgan = require('morgan');
 const multer = require('multer');
 const { dirname } = require('path');
 const uuid =  require('uuid/v4');
+const { format } = require('timeago.js');
 
 if(process.env.NODE_ENV !== 'production'){
     require('dotenv').config()
@@ -28,11 +29,16 @@ const storage = multer.diskStorage({
 app.use(multer({storage: storage}).single('image'));
 
 // variables globales 
+app.use((req, res, next) => {
+    app.locals.format = format;
+    next();
+});
 
 // rutas 
 app.use(require('./routes/index.js'));
 
 // archivos estaticos 
+app.use(express.static(path.join(__dirname, 'public')));
 
 // inicio del server 
 
